@@ -8,7 +8,6 @@ module.exports.index = async(req, res) => {
     const cart = await Cart.findOne({
         _id: cartId
     });
-    // console.log(`Cart: ${cart}`);
     
     res.json(cart);
 }
