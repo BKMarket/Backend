@@ -11,13 +11,6 @@ const port = process.env.PORT;
 
 const route = require("./api/routes/index.route.js")
 
-// app.get("/tasks", async(req, res) => {
-//     const tasks = await Task.find({
-//         deleted: false,
-//     }).select("title status timeStart timeFinish");
-//     // console.log(tasks);
-//     res.json(tasks);
-// });
 
 route(app);
 
