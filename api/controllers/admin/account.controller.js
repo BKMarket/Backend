@@ -1,6 +1,6 @@
 const Account = require("../../models/account.model.js");
 const Role = require("../../models/role.model.js");
-//[GET] /admin/accounts
+//[GET] /admin/api/accounts
 module.exports.index = async (req, res) => {
     let find = {
         deleted: false

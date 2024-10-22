@@ -1,7 +1,6 @@
 const ProductCategory = require('../../models/product-category.model.js');
 
-module.exports.index = async (req, res) => { 
-  //filterStatus
+module.exports.index = async (req, res) => {
     let find = {
         deleted: false
     };

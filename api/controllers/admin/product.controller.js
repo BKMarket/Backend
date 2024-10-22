@@ -21,8 +21,6 @@ module.exports.index = async (req, res) => {
         countProducts
     );
 
-    const objectSearch = searchHelper(req.query);
-
 
     const products = await Product.find(find)
         .limit(objectPagination.limitItems)
