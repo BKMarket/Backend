@@ -1,6 +1,6 @@
-const Product = require("../models/product.model");
-const searchHelper = require("../../helpers/search.js");
-const paginationHelper = require("../../helpers/pagination.js");
+const Product = require("../../models/product.model.js");
+const searchHelper = require("../../../helpers/search.js");
+const paginationHelper = require("../../../helpers/pagination.js");
 module.exports.index = async (req, res) => {
     const find = {
         deleted: false,

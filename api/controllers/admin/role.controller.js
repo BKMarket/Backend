@@ -1,4 +1,4 @@
-const Role = require("../models/role.model");
+const Role = require("../../models/role.model");
 
 //[GET] /admin/roles    --->Ghi chu cho controller
 module.exports.index = async (req, res) => {

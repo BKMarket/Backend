@@ -1,5 +1,5 @@
-const Account = require("../models/account.model.js");
-const Role = require("../models/role.model.js");
+const Account = require("../../models/account.model.js");
+const Role = require("../../models/role.model.js");
 //[GET] /admin/accounts
 module.exports.index = async (req, res) => {
     let find = {
