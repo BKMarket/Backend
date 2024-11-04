@@ -1,22 +1,25 @@
 const { verifyToken } = require('../service/token.service');
 
-const isLogged = (token) => {
-  if (!token || !verifyToken(token)) return false;
-  return true;
-};
+// DO NOT USE if route doesn't require authentication
+// If isAuthenticated == true, only authorized user can access
+// If isAuthenticated == false, only unauthorized user can access
 
-const isLoggedIn = (isLoggedIn, message) => (req, res, next) => {
+const checkAuthenticationStrict = (isAuthenticated) => (req, res, next) => {
   const token = req.cookies?.['jwt'];
-  if (isLogged(token) !== isLoggedIn) {
-    return res.status(403).json({ message });
-  }
+  const payload = verifyToken(token);
+  const hasPayload = !!payload;
+  if (hasPayload !== isAuthenticated)
+    return isAuthenticated
+      ? res.status(401).json('Unauthorized')
+      : res.status(200).json('Already logged in');
+  // Decodes JWT once and saves to req.account
+  req.account = payload;
   next();
 };
 
 // permissonLists: [String]
 const hasPermission = (permissionLists) => (req, res, next) => {
-  const token = req.cookies['jwt'];
-  const { permissions } = verifyToken(token);
+  const { permissions } = req.account;
   const hasPerms = permissionLists.every((perm) => permissions?.includes(perm));
   if (!hasPerms) {
     return res.status(403).json({ message: 'Unauthorized' });
@@ -25,12 +28,11 @@ const hasPermission = (permissionLists) => (req, res, next) => {
 };
 
 const hasRole = (role) => (req, res, next) => {
-  const token = req.cookies['jwt'];
-  const { role_id } = verifyToken(token);
+  const { role_id } = req.account;
   if (role_id !== role) {
     return res.status(403).json({ message: 'Unauthorized' });
   }
   next();
 };
 
-module.exports = { isLoggedIn, hasPermission, hasRole };
+module.exports = { checkAuthenticationStrict, hasPermission, hasRole };
