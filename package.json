@@ -1,4 +1,14 @@
 {
+  "imports": {
+    "#controllers/*": "./api/controllers/*",
+    "#models/*": "./api/models/*",
+    "#routes/*": "./api/routes/*",
+    "#config/*": "./config/*",
+    "#helpers/*": "./helpers/*",
+    "#middleware/*": "./middleware/*",
+    "#service/*": "./service/*",
+    "#validator/*": "./validator/*"
+  },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
