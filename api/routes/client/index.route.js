@@ -1,5 +1,7 @@
-const cartRoutes = require("./cart.route.js");
+const authRoutes = require('./auth.route.js');
+const cartRoutes = require('./cart.route.js');
 
 module.exports = (app) => {
-    app.use('/api/carts', cartRoutes);
-}
+  app.use('/api/auth', authRoutes);
+  app.use('/api/carts', cartRoutes);
+};
