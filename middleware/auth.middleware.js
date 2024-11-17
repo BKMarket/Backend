@@ -5,7 +5,7 @@ const { verifyToken } = require('../service/token.service');
 // If isAuthenticated == false, only unauthorized user can access
 
 const checkAuthenticationStrict = (isAuthenticated) => (req, res, next) => {
-  const token = req.cookies?.['jwt'];
+  const token = req.headers.authorization?.split(' ')[1];
   const payload = verifyToken(token);
   const hasPayload = !!payload;
   if (hasPayload !== isAuthenticated)
@@ -27,9 +27,9 @@ const hasPermission = (permissionLists) => (req, res, next) => {
   next();
 };
 
-const hasRole = (role) => (req, res, next) => {
-  const { role_id } = req.account;
-  if (role_id !== role) {
+const hasRole = (requiredRole) => (req, res, next) => {
+  const { role } = req.account;
+  if (requiredRole !== role) {
     return res.status(403).json({ message: 'Unauthorized' });
   }
   next();
