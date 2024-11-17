@@ -4,7 +4,11 @@ const bcrypt = require('bcrypt');
 
 const accountSchema = new mongoose.Schema(
   {
-    fullName: {
+    firstName: {
+      type: String,
+      required: true
+    },
+    lastName: {
       type: String,
       required: true
     },
@@ -18,13 +22,20 @@ const accountSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    phone: String,
+    phone: {
+      type: String,
+      default: null
+    },
     avatar: String,
-    role_id: {
+    role: {
       type: String,
       default: 'User'
     }, //save the permission code
-    status: String,
+    status: {
+      type: String,
+      enum: ['Active', 'Inactive'],
+      default: 'Active'
+    },
     deleted: {
       type: Boolean,
       default: false
@@ -32,7 +43,15 @@ const accountSchema = new mongoose.Schema(
     deletedAt: Date
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+      transform: (doc, ret) => {
+        delete ret.__v;
+        delete ret.password;
+        delete ret.createdAt;
+        delete ret.updatedAt;
+      }
+    }
   }
 );
 
@@ -45,7 +64,7 @@ accountSchema.pre('save', async function (next) {
 });
 
 accountSchema.statics.login = async function (email, password) {
-  const account = await this.findOne({ email });
+  const account = await this.findOne({ email, deleted: false });
   if (account) {
     const isMatch = await bcrypt.compare(password, account.password);
     if (isMatch) {

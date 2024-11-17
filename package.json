@@ -7,27 +7,25 @@
     "#helpers/*": "./helpers/*",
     "#middleware/*": "./middleware/*",
     "#service/*": "./service/*",
-    "#validator/*": "./validator/*"
+    "#validator/*": "./validator/*",
+    "#seeder/*": "./seeder/*",
+    "#utils/*": "./utils/*"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.1",
     "mongoose-slug-updater": "^3.3.0",
-    "multer": "^1.4.5-lts.1",
-    "node": "^22.11.0",
-    "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-jwt": "^4.0.1"
+    "multer": "^1.4.5-lts.1"
   },
   "name": "bk_market",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "nodemon --inspect index.js",
+    "dev": "nodemon --inspect index.js",
     "lint": "eslint",
     "format": "prettier --write",
     "prepare": "husky",
@@ -44,6 +42,7 @@
   "description": "",
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@faker-js/faker": "^9.2.0",
     "eslint": "^9.13.0",
     "globals": "^15.11.0",
     "husky": "^9.1.6",
