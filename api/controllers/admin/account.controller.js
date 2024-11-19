@@ -1,6 +1,6 @@
 const Account = require('#models/account.model.js');
-const mongoose = require('mongoose');
 const { sortFields, findFields, pagination } = require('#utils/query.utils.js');
+const { getMongooseObjectIdParams } = require('#utils/getParams.utils.js');
 
 //[GET] /admin/api/accounts
 module.exports.getAccounts = async (req, res, next) => {
@@ -27,12 +27,12 @@ module.exports.getAccounts = async (req, res, next) => {
 };
 
 //[GET] /admin/api/accounts/:id
-module.exports.getAccount = async (req, res, next) => {
+module.exports.getAccountById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: 'Invalid account ID' });
-    }
+    const id = getMongooseObjectIdParams('id', req, res);
+    // if (!mongoose.Types.ObjectId.isValid(id)) {
+    //   return res.status(400).json({ success: false, message: 'Invalid account ID' });
+    // }
     const account = await Account.findById(id);
     res.status(200).json({ success: true, data: account });
   } catch (error) {
@@ -44,10 +44,10 @@ module.exports.getAccount = async (req, res, next) => {
 //[POST] /admin/api/accounts/:id/unsuspend
 module.exports.suspendAccount = (suspend) => async (req, res, next) => {
   try {
-    const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: 'Invalid account ID' });
-    }
+    const id = getMongooseObjectIdParams('id', req, res);
+    // if (!mongoose.Types.ObjectId.isValid(id)) {
+    //   return res.status(400).json({ success: false, message: 'Invalid account ID' });
+    // }
     const account = suspend
       ? await Account.findByIdAndUpdate(id, { deleted: true, deletedAt: Date.now() })
       : await Account.findByIdAndUpdate(id, { deleted: false, deletedAt: null });

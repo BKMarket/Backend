@@ -9,7 +9,7 @@ router.use(checkAuthenticationStrict(true), hasRole('Admin'));
 
 router.get('/', controller.getAccounts);
 
-router.get('/:id', controller.getAccount);
+router.get('/:id', controller.getAccountById);
 
 router.post('/:id/suspend', controller.suspendAccount(true));
 

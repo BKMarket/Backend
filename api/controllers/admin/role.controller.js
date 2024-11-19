@@ -1,65 +1,60 @@
-const Role = require("../../models/role.model");
+const Role = require('../../models/role.model');
+const { findFields, sortFields, pagination, pickFields } = require('#utils/query.utils.js');
+const { getMongooseObjectIdParams } = require('#utils/getParams.utils.js');
 
-//[GET] /admin/api/roles    
-module.exports.index = async (req, res) => {
-    let find = {
-        deleted: false
-    };
-    const records = await Role.find(find);
-    res.json(records);
-}
+const ROLE_VIEW = { _id: 1, title: 1, description: 1, deleted: 1, deletedAt: 1, permissions: 1 };
 
-module.exports.create = async(req, res) => {
-    res.send("Create role");
-}
+//[GET] /admin/api/roles
+module.exports.getRoles = async (req, res, next) => {
+  const findOptions = findFields(req.query, 'deleted', 'title', 'description', 'permissions');
+  const sortOptions = sortFields(req.query, 'deletedAt', 'title');
+  const { page, skip, limit } = pagination(req.query);
+  try {
+    const records = await Role.find(findOptions)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit)
+      .select(ROLE_VIEW);
+    res.status(200).json({ success: true, page: page, data: records });
+  } catch (err) {
+    next(err);
+  }
+};
 
-module.exports.createPost = async(req, res) => {
-    const record = new Role(req.body);
-    await record.save();
-    res.json("Create role successfully");
-}
+//[GET] /admin/api/roles/:id
+module.exports.getRoleById = async (req, res, next) => {
+  const id = getMongooseObjectIdParams('id', req, res);
+  try {
+    const record = await Role.findById(id);
+    res.status(200).json({ success: true, data: record });
+  } catch (err) {
+    next(err);
+  }
+};
 
-module.exports.edit = async(req, res) => {
-    const id = req.params.id;
-    const data = await Role.findOne({
-        _id: id,
-        deleted: false
-    });
-    res.json(data);
-}
+//[PUT] /admin/api/roles/create
+module.exports.createRole = async (req, res, next) => {
+  const role = pickFields(req.body, 'title', 'description', 'permissions');
+  try {
+    const record = await Role.create(role);
+    res.status(200).json({ success: true, data: record });
+  } catch (err) {
+    next(err);
+  }
+};
 
-module.exports.editPatch = async(req, res) => {
-    await Role.updateOne({
-        _id: req.params.id
-    }, req.body);
-    res.send("Update role successfully");
-}
-
-module.exports.permissions = async(req, res) => {
-    let find = {
-        deleted: false
-    };
-    const records = await Role.find(find);
-    res.json(records);
-}
-
-module.exports.permissionsPatch = async(req, res) => {
-    const permissions = JSON.parse(req.body.permissions);
-    for (const item of permissions){
-        await Role.updateOne({
-            _id: item.id
-        }, {
-            permissions: item.permissions
-        });
+//[POST] /admin/api/roles/:id/update
+module.exports.updateRoleById = async (req, res, next) => {
+  const id = getMongooseObjectIdParams('id', req, res);
+  const role = pickFields(req.body, 'delete', 'title', 'description', 'permissions');
+  try {
+    if (role.delete) {
+      const record = await Role.findByIdAndDelete(id, { new: true });
+      res.status(200).json({ success: true, data: record });
     }
-    res.send("Update permissions successfully");
-}
-
-module.exports.detail = async(req, res) => {
-    const find = {
-        deleted: false,
-        _id: req.params.id
-    }
-    const role = await Role.findOne(find);
-    res.json(role);
-}
+    const record = await Role.findByIdAndUpdate(id, role, { new: true });
+    res.status(200).json({ success: true, data: record });
+  } catch (err) {
+    next(err);
+  }
+};

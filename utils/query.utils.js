@@ -22,7 +22,15 @@ module.exports.findFields = (query, ...fields) => {
     if (query[field]) findOptions[field] = query[field];
   });
   // Default find option, everything
-  return {};
+  return findOptions;
+};
+
+module.exports.pickFields = (query, ...fields) => {
+  const pickOptions = {};
+  fields.forEach((field) => {
+    if (query[field]) pickOptions[field] = query[field];
+  });
+  return pickOptions;
 };
 
 // Offset pagination
