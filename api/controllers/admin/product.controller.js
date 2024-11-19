@@ -1,93 +1,84 @@
-const Product = require("../../models/product.model.js");
-const ProductCategory = require("../../models/product-category.model.js");
+const Product = require('../../models/product.model.js');
+const ProductCategory = require('../../models/product-category.model.js');
 
-const searchHelper = require("../../../helpers/search.js");
-const paginationHelper = require("../../../helpers/pagination.js");
-const filterStatusHelper = require("../../../helpers/filter-status.js");
-const createTreeHelper = require("../../../helpers/createTree.js");
+const searchHelper = require('../../../helpers/search.js');
+const paginationHelper = require('../../../helpers/pagination.js');
+const filterStatusHelper = require('../../../helpers/filter-status.js');
+const createTreeHelper = require('../../../helpers/createTree.js');
 
 module.exports.index = async (req, res) => {
-    const filterStatus = filterStatusHelper(req.query);
+  const filterStatus = filterStatusHelper(req.query);
 
-    const find = {
-        deleted: false,
-    };
+  const find = {
+    deleted: false
+  };
 
-    if (req.query.status) {
-        find.status = req.query.status;
-    }
+  if (req.query.status) {
+    find.status = req.query.status;
+  }
 
-    const objectSearch = searchHelper(req.query);
+  const objectSearch = searchHelper(req.query);
 
-    if (objectSearch.regex){
-        find.title = objectSearch.regex;
-    }
+  if (objectSearch.regex) {
+    find.title = objectSearch.regex;
+  }
 
-    let initPagination = {
-        currentPage: 1,
-        limitItems: 4
-    };
+  let initPagination = {
+    currentPage: 1,
+    limitItems: 4
+  };
 
+  //Pagination
+  const countProducts = await Product.countDocuments(find);
 
-    //Pagination
-    const countProducts = await Product.countDocuments(find);
+  const objectPagination = paginationHelper(initPagination, req.query, countProducts);
+  //End Pagination
 
-    const objectPagination = paginationHelper(
-        initPagination,
-        req.query,
-        countProducts
-    );
-    //End Pagination
+  //Sort
+  let sort = {};
+  if (req.query.sortKey && req.query.sortValue) {
+    sort[req.query.sortKey] = req.query.sortValue;
+  } else {
+    sort.position = 'desc';
+  }
+  //End Sort
 
-    //Sort
-    let sort = {}
-    if (req.query.sortKey && req.query.sortValue){
-        sort[req.query.sortKey] = req.query.sortValue;
-    } else{
-        sort.position = "desc"
-    }
-    //End Sort
+  const products = await Product.find(find)
+    .sort(sort)
+    .limit(objectPagination.limitItems)
+    .skip(objectPagination.skip);
 
+  res.json(products);
+};
 
-    const products = await Product.find(find)
-                                    .sort(sort)
-                                    .limit(objectPagination.limitItems)
-                                    .skip(objectPagination.skip);
+module.exports.detail = async (req, res) => {
+  const find = {
+    deleted: false,
+    _id: req.params.id
+  };
 
-    res.json(products);
-}
+  const product = await Product.findOne(find);
 
+  // const p_category = await ProductCategory.findOne({
+  //     _id: product.product_category_id
+  // });
 
-
-module.exports.detail = async(req, res) => {
-    const find = {
-        deleted: false,
-        _id: req.params.id
-    }
-
-    const product = await Product.findOne(find);
-    
-    // const p_category = await ProductCategory.findOne({
-    //     _id: product.product_category_id
-    // });
-
-    // if (p_category){
-    //     product.product_category_id = p_category.title
-    // }
-    product.product_category_id = "Test";
-    res.json(product);
-    // res.send("Detail");
-}
-
+  // if (p_category){
+  //     product.product_category_id = p_category.title
+  // }
+  product.product_category_id = 'Test';
+  res.json(product);
+  // res.send("Detail");
+};
 
 module.exports.create = async (req, res) => {
-    let find = {
-        deleted: false,
-    };
-    const category = await ProductCategory.find(find);
-    // const newCategory = await createTreeHelper.tree(category);
-    res.json(category);
-}
+  let find = {
+    deleted: false
+  };
+  const category = await ProductCategory.find(find);
+  // const newCategory = await createTreeHelper.tree(category);
+  res.json(category);
+};
 
 //Copy this snippet to the body in Postman to test the createPost function:
 
@@ -108,39 +99,37 @@ module.exports.create = async (req, res) => {
 //     "discountPercentage": 12.5,
 //     "deletedAt": null,
 //     "updatedBy": [
-      
+
 //     ]
 //   }
 
-module.exports.createPost = async(req, res) => {
-    req.body.price = parseInt(req.body.price);
-    req.body.discountPercentage = parseInt(req.body.discountPercentage);
-    req.body.stock = parseInt(req.body.stock);
+module.exports.createPost = async (req, res) => {
+  req.body.price = parseInt(req.body.price);
+  req.body.discountPercentage = parseInt(req.body.discountPercentage);
+  req.body.stock = parseInt(req.body.stock);
 
+  if (req.body.position == '') {
+    const countProducts = await Product.countDocuments();
+    req.body.position = countProducts + 1;
+  } else {
+    req.body.position = parseInt(req.body.position);
+  }
 
-    if(req.body.position == "") {
-        const countProducts = await Product.countDocuments();
-        req.body.position = countProducts + 1;
-    } else{
-        req.body.position = parseInt(req.body.position);
-    }
+  const product = new Product(req.body);
+  await product.save();
+  res.json(product);
+};
 
-    const product = new Product(req.body);
-    await product.save();
-    res.json(product);
-}
-
-
-module.exports.edit = async(req, res) => {
-    const find = {
-        deleted: false,
-        _id: req.params.id
-    }
-    const product = await Product.findOne(find);
-    //const category = await ProductCategory.find({deleted: false});
-    //const newCategory = await createTreeHelper.tree(category);
-    res.json({product});
-}
+module.exports.edit = async (req, res) => {
+  const find = {
+    deleted: false,
+    _id: req.params.id
+  };
+  const product = await Product.findOne(find);
+  //const category = await ProductCategory.find({deleted: false});
+  //const newCategory = await createTreeHelper.tree(category);
+  res.json({ product });
+};
 
 //http://localhost:3000/admin/api/products/edit/:id
 // params: {
@@ -174,29 +163,32 @@ module.exports.edit = async(req, res) => {
 //   ]
 // }
 
-module.exports.editPatch = async(req, res) => {
-    req.body.price = parseInt(req.body.price);
-    req.body.discountPercentage = parseInt(req.body.discountPercentage);
-    req.body.stock = parseInt(req.body.stock);
-    req.body.position = parseInt(req.body.position);
+module.exports.editPatch = async (req, res) => {
+  req.body.price = parseInt(req.body.price);
+  req.body.discountPercentage = parseInt(req.body.discountPercentage);
+  req.body.stock = parseInt(req.body.stock);
+  req.body.position = parseInt(req.body.position);
 
-    await Product.updateOne({ _id: req.params.id }, {
-        ...req.body
-      });
-    res.send({message: "Update success"});
-}
+  await Product.updateOne(
+    { _id: req.params.id },
+    {
+      ...req.body
+    }
+  );
+  res.send({ message: 'Update success' });
+};
 
-module.exports.delete = async(req, res) => {
-    const id = req.params.id;
-    await Product.updateOne({_id: id}, {
-        deleted: true,
-        deletedBy: {
-            account_id: "",
-            deletedAt: new Date(),
-        }
-    });
-    res.json({message: "Delete success"});
-}
-
-
-
+module.exports.delete = async (req, res) => {
+  const id = req.params.id;
+  await Product.updateOne(
+    { _id: id },
+    {
+      deleted: true,
+      deletedBy: {
+        account_id: '',
+        deletedAt: new Date()
+      }
+    }
+  );
+  res.json({ message: 'Delete success' });
+};

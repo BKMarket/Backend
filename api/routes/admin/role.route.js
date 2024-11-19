@@ -3,20 +3,12 @@ const router = express.Router();
 
 const controller = require('../../controllers/admin/role.controller.js');
 
-router.get('/', controller.index);
+router.get('/', controller.getRoles);
 
-router.get('/create', controller.create);
+router.get('/:id', controller.getRoleById);
 
-router.post('/create', controller.createPost);  
+router.put('/create', controller.createRole);
 
-router.get('/edit/:id', controller.edit);
-
-router.patch('/edit/:id', controller.editPatch);
-
-router.get('/permissions', controller.permissions);
-
-router.patch('/permissions', controller.permissionsPatch);
-
-router.get('/detail/:id', controller.detail);
+router.post('/:id/update', controller.updateRoleById);
 
 module.exports = router;

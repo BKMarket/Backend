@@ -44,9 +44,17 @@ module.exports.mongooseDuplicateKeyError = (err, req, res, next) => {
   if (err.code == 11000) {
     let data = {};
 
-    Object.keys(err.keyValue).forEach((key) => {
-      data[key] = `${key} already existed inside the database`;
-    });
+    if (err.writeErrors) {
+      err.writeErrors.forEach((writeError) => {
+        if (writeError?.err?.op?.email) {
+          data.email = `Email "${writeError.err.op.email}" already exists in the database`;
+        }
+      });
+    } else {
+      Object.keys(err.keyValue).forEach((key) => {
+        data[key] = `${key} already existed inside the database`;
+      });
+    }
 
     res.status(409).json({
       success: false,

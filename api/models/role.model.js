@@ -1,17 +1,16 @@
 const mongoose = require('mongoose');
 const roleSchema = new mongoose.Schema(
   {
-    title: String,
+    title: {
+      type: String,
+      required: true,
+      unique: true
+    },
     description: String,
     permissions: {
       type: [String],
       default: false
-    },
-    deleted: {
-      type: Boolean,
-      default: false
-    },
-    deletedAt: Date
+    }
   },
   {
     timestamps: true
