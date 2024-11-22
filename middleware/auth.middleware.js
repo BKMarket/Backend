@@ -1,4 +1,4 @@
-const { verifyToken } = require('../service/token.service');
+const { verifyToken } = require('#service/lib/token.service.js');
 
 // DO NOT USE if route doesn't require authentication
 // If isAuthenticated == true, only authorized user can access

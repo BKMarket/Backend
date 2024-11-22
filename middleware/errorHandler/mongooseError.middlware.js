@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('#config/db/customMongoose.js');
 
 // Validation error
 module.exports.mongooseValidationError = (err, req, res, next) => {

@@ -1,52 +1,77 @@
-const mongoose = require("mongoose");
-const slug = require("mongoose-slug-updater");
+const mongoose = require('#config/db/customMongoose.js');
+const slug = require('mongoose-slug-updater');
 mongoose.plugin(slug);
-const productSchema = new mongoose.Schema(
-    {
-        title: String,
-        product_category_id: {
-            type: String,
-            default: ""
-        },
-        description: String,
-        price: Number,
-        discountPercentage: Number,
-        stock: Number,
-        thumbnail: String,
-        status: String,
-        featured: String,
-        position: Number,
-        slug: {
-            type: String,
-            slug: "title",
-            unique: true
-        },
-        createdBy: {
-            account_id: String,
-            createdAt: {
-                type: Date,
-                default: Date.now
-            }
-        },
-        deleted: {
-            type: Boolean,
-            default: false
-        },
-        deletedBy: {
-            account_id: String,
-            deletedAt: Date
-        },
-        updatedBy: [
-            {
-            account_id: String,
-            updateAt: Date
-            } 
-        ],
-    }, 
-    {
-        timestamps: true
-    });
 
-const Product = mongoose.model('Product', productSchema, "products");
+const productSchema = new mongoose.Schema(
+  {
+    approved: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+    title: String,
+    tag: {
+      type: [
+        {
+          type: String,
+          index: true
+        }
+      ]
+    },
+    description: String,
+    price: Number,
+    discountPercentage: {
+      type: Number,
+      default: 0
+    },
+    stock: {
+      type: Number,
+      default: 0
+    },
+    sold: {
+      type: Number,
+      default: 0
+    },
+    thumbnail: {
+      type: String,
+      required: true
+    },
+    images: [String],
+    slug: {
+      type: String,
+      slug: 'title',
+      unique: true
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Account',
+      index: true,
+      required: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    lastModifiedAt: {
+      type: Date,
+      default: Date.now
+    },
+    deleted: {
+      type: Boolean,
+      default: false
+    },
+    deletedAt: Date,
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Account',
+      index: true
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+
+const Product = mongoose.model('Product', productSchema, 'products');
 
 module.exports = Product;

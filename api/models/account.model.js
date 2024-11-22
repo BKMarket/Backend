@@ -1,6 +1,12 @@
-const mongoose = require('mongoose');
-const isHCMUTMail = require('../../validator/isHCMUTMail.js');
+const mongoose = require('#config/db/customMongoose.js');
 const bcrypt = require('bcrypt');
+const { fakerJA } = require('@faker-js/faker');
+
+function isHCMUTMail(email) {
+  return (
+    email.endsWith('@hcmut.edu.vn') && email.indexOf('@') === email.length - '@hcmut.edu.vn'.length
+  );
+}
 
 const accountSchema = new mongoose.Schema(
   {
@@ -26,7 +32,10 @@ const accountSchema = new mongoose.Schema(
       type: String,
       default: null
     },
-    avatar: String,
+    avatar: {
+      type: String,
+      default: fakerJA.image.avatarGitHub()
+    },
     role: {
       type: String,
       default: 'User'
@@ -36,11 +45,27 @@ const accountSchema = new mongoose.Schema(
       enum: ['Active', 'Inactive'],
       default: 'Active'
     },
+    cart: {
+      type: [
+        {
+          product_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+          },
+          quantity: Number
+        }
+      ],
+      default: []
+    },
     deleted: {
       type: Boolean,
       default: false
     },
-    deletedAt: Date
+    deletedAt: Date,
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Account'
+    }
   },
   {
     timestamps: true,
@@ -55,6 +80,18 @@ const accountSchema = new mongoose.Schema(
   }
 );
 
+accountSchema.methods.toJSONasync = async function () {
+  const account = this.toJSON();
+  account.perms =
+    (await mongoose.model('Role').findOne({ title: account.role }))?.permissions || [];
+  return account;
+};
+
+accountSchema.pre('toJSON', async function (next) {
+  this.perms = (await mongoose.model('Role').findOne({ title: this.role }))?.permissions || [];
+  next();
+});
+
 accountSchema.pre('save', async function (next) {
   const account = this;
   if (account.isModified('password')) {
@@ -64,7 +101,7 @@ accountSchema.pre('save', async function (next) {
 });
 
 accountSchema.statics.login = async function (email, password) {
-  const account = await this.findOne({ email, deleted: false });
+  const account = await this.findOne({ email, deleted: false, status: 'Active' });
   if (account) {
     const isMatch = await bcrypt.compare(password, account.password);
     if (isMatch) {

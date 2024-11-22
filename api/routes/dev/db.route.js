@@ -1,6 +1,7 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const dbSeedAccount = require('#seeder/account.seeder.js');
+const mongoose = require('#config/db/customMongoose.js');
+const dbSeedAccount = require('#service/seeder/account.service.js');
+const dbSeedProduct = require('#service/seeder/product.service.js');
 
 const router = express.Router();
 
@@ -16,6 +17,23 @@ router.post('/seedaccount', async (req, res, next) => {
     res
       .status(200)
       .json({ status: 'success', message: `Seeded ${total} accounts with seed ${seed}` });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/clearproduct', async (req, res) => {
+  mongoose.model('Product').collection.drop();
+  res.status(200).json({ status: 'success', message: 'Cleared all products' });
+});
+
+router.post('/seedproduct', async (req, res, next) => {
+  const { total = 100, seed = 123 } = req.body;
+  try {
+    await dbSeedProduct({ total, seed: Number(seed) });
+    res
+      .status(200)
+      .json({ status: 'success', message: `Seeded ${total} products with seed ${seed}` });
   } catch (err) {
     next(err);
   }

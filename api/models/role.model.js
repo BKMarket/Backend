@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('#config/db/customMongoose.js');
 const roleSchema = new mongoose.Schema(
   {
     title: {
@@ -8,8 +8,13 @@ const roleSchema = new mongoose.Schema(
     },
     description: String,
     permissions: {
-      type: [String],
-      default: false
+      type: [
+        {
+          type: String,
+          enum: ['buy', 'sell', 'ban']
+        }
+      ],
+      default: ['buy']
     }
   },
   {

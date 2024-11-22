@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('#config/db/customMongoose.js');
 module.exports.connect = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URL);
