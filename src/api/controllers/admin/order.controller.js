@@ -1,7 +1,7 @@
 const orderService = require('#service/db/order/order.service.js');
 
 module.exports.count = async (req, res) => {
-  const count = await orderService.countOrders();
+  const count = await orderService.countOrders({ completed: true });
   res.json({ success: true, data: count });
 };
 
