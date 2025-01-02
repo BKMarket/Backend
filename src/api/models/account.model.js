@@ -1,4 +1,4 @@
-const mongoose = require('#config/db/customMongoose.js');
+const mongoose = require('../../config/db/customMongoose.js');
 const bcrypt = require('bcrypt');
 const { fakerJA } = require('@faker-js/faker');
 
@@ -48,11 +48,15 @@ const accountSchema = new mongoose.Schema(
     cart: {
       type: [
         {
-          product_id: {
+          product: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product'
+            ref: 'Product',
+            required: true
           },
-          quantity: Number
+          quantity: {
+            type: Number,
+            required: true
+          }
         }
       ],
       default: []

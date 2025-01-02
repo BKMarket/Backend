@@ -1,4 +1,4 @@
-const mongoose = require('#config/db/customMongoose.js');
+const mongoose = require('../../config/db/customMongoose.js');
 const roleSchema = new mongoose.Schema(
   {
     title: {

@@ -1,4 +1,4 @@
-const mongoose = require('#config/db/customMongoose.js');
+const mongoose = require('../../config/db/customMongoose.js');
 const slug = require('mongoose-slug-updater');
 mongoose.plugin(slug);
 
@@ -9,7 +9,10 @@ const productSchema = new mongoose.Schema(
       default: false,
       index: true
     },
-    title: String,
+    title: {
+      type: String,
+      required: true
+    },
     tag: {
       type: [
         {
@@ -19,10 +22,15 @@ const productSchema = new mongoose.Schema(
       ]
     },
     description: String,
-    price: Number,
+    price: {
+      type: Number,
+      required: true
+    },
     discountPercentage: {
       type: Number,
-      default: 0
+      default: 0,
+      min: 0,
+      max: 100
     },
     stock: {
       type: Number,
