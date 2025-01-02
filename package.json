@@ -1,23 +1,24 @@
 {
   "imports": {
-    "#controllers/*": "./api/controllers/*",
-    "#models/*": "./api/models/*",
-    "#routes/*": "./api/routes/*",
-    "#config/*": "./config/*",
-    "#middleware/*": "./middleware/*",
-    "#seeder/*": "./seeder/*",
-    "#service/*": "./service/*",
-    "#utils/*": "./utils/*"
+    "#controllers/*": "./src/api/controllers/*",
+    "#models/*": "./src/api/models/*",
+    "#routes/*": "./src/api/routes/*",
+    "#config/*": "./src/config/*",
+    "#middleware/*": "./src/middleware/*",
+    "#seeder/*": "./src/seeder/*",
+    "#service/*": "./src/service/*",
+    "#utils/*": "./src/utils/*"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "celebrate": "^15.0.3",
     "cors": "^2.8.5",
     "express": "^4.21.1",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.46",
     "mongoose": "^8.7.1",
     "mongoose-slug-updater": "^3.3.0",
-    "multer": "^1.4.5-lts.1",
     "uuid": "^11.0.3",
     "vnpay": "^1.6.1"
   },
