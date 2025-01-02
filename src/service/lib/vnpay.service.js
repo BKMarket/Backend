@@ -48,7 +48,6 @@ module.exports.logTransaction = async (order) => {
 module.exports.verifyIPN = async (ipn) => {
   try {
     const verify = vnpayConfig.verifyIpnCall(ipn);
-    console.log(verify);
 
     verify.vnp_ResponseCode;
 

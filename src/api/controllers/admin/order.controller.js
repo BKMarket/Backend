@@ -1,4 +1,3 @@
-const express = require('express');
 const orderService = require('#service/db/order/order.service.js');
 
 module.exports.count = async (req, res) => {

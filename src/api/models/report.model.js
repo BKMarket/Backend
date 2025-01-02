@@ -1,4 +1,3 @@
-const { required } = require('joi');
 const mongoose = require('../../config/db/customMongoose.js');
 
 const reportSchema = new mongoose.Schema({

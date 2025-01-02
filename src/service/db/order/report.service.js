@@ -1,5 +1,4 @@
 const Report = require('#models/report.model.js');
-const mongoose = require('#config/db/customMongoose.js');
 
 const createReport = async (account, productID, { orderID, reason }) => {
   const report = await Report.create({ account, product: productID, order: orderID, reason });

@@ -1,4 +1,5 @@
 const Account = require('#models/account.model.js');
+const productService = require('#service/db/product.service.js');
 
 const getProfiles = async (findOptions, sortOptions, { page = 1, limit = 10 } = {}) => {
   const records = await Account.find(findOptions).sort(sortOptions).paginate({ page, limit });
@@ -19,8 +20,8 @@ const deleteProfile = async (accountId) => {
   return await updateProfile(accountId, { status: 'Inactive' });
 };
 
-const terminateProfile = async (accountId) => {
-  console.log(accountId);
+const terminateProfile = async (accountId, adminId) => {
+  productService.deleteProductsOfUser(accountId, adminId);
   return await updateProfile(accountId, { deleted: true, deletedAt: Date.now() });
 };
 

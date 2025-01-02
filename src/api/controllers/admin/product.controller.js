@@ -18,7 +18,7 @@ module.exports.approve = async (req, res, next) => {
 // [POST] /api/admin/products/:id/deny
 module.exports.deny = async (req, res, next) => {
   try {
-    await rejectProduct(req.params.id);
+    await rejectProduct(req.params.id, req.account._id);
     res.json({ success: true });
   } catch (err) {
     next(err);
@@ -34,5 +34,14 @@ module.exports.count = async (req, res) => {
 // [GET] /api/products/waiting
 module.exports.notApproved = async (req, res) => {
   const product = await getProducts({ approved: false }, { lastModifiedAt: 1 }, req.query);
+  res.json({ success: true, data: product });
+};
+
+// [GET] /api/products/
+module.exports.list = async (req, res) => {
+  const findOptions = {
+    ...(req.query.name && { title: { $regex: req.query.name, $options: 'i' } })
+  };
+  const product = await getProducts(findOptions, { lastModifiedAt: 1 }, req.query);
   res.json({ success: true, data: product });
 };

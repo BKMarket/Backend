@@ -34,16 +34,16 @@ const updateProduct = async (productId, creatorId, updateData) => {
 const deleteProduct = async (productId, creatorId) => {
   const product = await Product.findOneAndUpdate(
     { _id: productId, createdBy: creatorId },
-    { deleted: true },
+    { deleted: true, deletedBy: creatorId },
     { new: true }
   );
   return product;
 };
 
-const rejectProduct = async (productId) => {
+const rejectProduct = async (productId, adminId) => {
   const product = await Product.findByIdAndUpdate(
     productId,
-    { approved: false, lastModifiedAt: new Date() },
+    { approved: false, lastModifiedAt: new Date(), deleted: true, deletedBy: adminId },
     { new: true }
   );
   return product;
@@ -58,6 +58,20 @@ const approveProduct = async (productId) => {
   return product;
 };
 
+const deleteProducts = async (findOptions) => {
+  const products = await Product.deleteMany(findOptions);
+  return products;
+};
+
+const deleteProductsOfUser = async (userId, adminId) => {
+  const products = await Product.updateMany(
+    { createdBy: userId },
+    { deleted: true, deletedBy: adminId, lastModifiedAt: new Date() },
+    { new: true }
+  );
+  return products;
+};
+
 const productService = {
   countProducts,
   getProducts,
@@ -66,7 +80,9 @@ const productService = {
   updateProduct,
   deleteProduct,
   rejectProduct,
-  approveProduct
+  approveProduct,
+  deleteProducts,
+  deleteProductsOfUser
 };
 
 module.exports = productService;

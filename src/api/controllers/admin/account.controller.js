@@ -44,8 +44,7 @@ module.exports.getAccountById = async (req, res, next) => {
 module.exports.suspendAccount = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    const account = await terminateProfile(id);
+    const account = await terminateProfile(id, req.account._id);
     res.status(200).json({ success: true, data: account });
   } catch (error) {
     next(error);
@@ -54,7 +53,6 @@ module.exports.suspendAccount = async (req, res, next) => {
 
 //[POST] /admin/api/accounts/:id/unsuspend
 module.exports.unsuspendAccount = async (req, res, next) => {
-  console.log(123);
   try {
     const { id } = req.params;
     const account = await activateProfile(id);

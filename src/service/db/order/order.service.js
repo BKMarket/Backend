@@ -40,6 +40,17 @@ const getSellerOrdersByStage = async (sellerId, stage, { page = 1, limit = 10 } 
       $unwind: '$populatedProduct'
     },
     {
+      $lookup: {
+        from: 'accounts',
+        localField: 'account',
+        foreignField: '_id',
+        as: 'account'
+      }
+    },
+    {
+      $unwind: '$account'
+    },
+    {
       $match: {
         ...(stage && { 'products.stage': stage }),
         'populatedProduct.createdBy': id

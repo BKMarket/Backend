@@ -6,7 +6,8 @@ const {
   getMy,
   getPending,
   getAccepted,
-  getCanceled
+  getCanceled,
+  getReceived
 } = require('#controllers/client/order.controller.js');
 const { checkAuthenticationStrict } = require('#middleware/auth.middleware.js');
 
@@ -16,6 +17,7 @@ router.get('/my', checkAuthenticationStrict(true), getMy);
 router.get('/pending', checkAuthenticationStrict(true), getPending);
 router.get('/accepted', checkAuthenticationStrict(true), getAccepted);
 router.get('/canceled', checkAuthenticationStrict(true), getCanceled);
+router.get('/received', checkAuthenticationStrict(true), getReceived);
 
 router.post('/:orderId/accept/:productId', checkAuthenticationStrict(true), accept);
 router.post('/:orderId/deny/:productId', checkAuthenticationStrict(true), deny);

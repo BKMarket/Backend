@@ -3,6 +3,7 @@ const productController = require('#controllers/admin/product.controller.js');
 
 const router = express.Router();
 
+router.get('/', productController.list);
 router.get('/waiting', productController.notApproved);
 router.post('/:id/approve', productController.approve);
 router.post('/:id/deny', productController.deny);
