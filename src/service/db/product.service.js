@@ -52,16 +52,16 @@ const rejectProduct = async (productId, adminId) => {
 const approveProduct = async (productId) => {
   const product = await Product.findByIdAndUpdate(
     productId,
-    { approved: true, lastModifiedAt: new Date() },
+    { approved: true, lastModifiedAt: new Date(), deleted: false, deletedBy: null },
     { new: true }
   );
   return product;
 };
 
-const deleteProducts = async (findOptions) => {
-  const products = await Product.deleteMany(findOptions);
-  return products;
-};
+// const deleteProducts = async (findOptions) => {
+//   const products = await Product.deleteMany(findOptions);
+//   return products;
+// };
 
 const deleteProductsOfUser = async (userId, adminId) => {
   const products = await Product.updateMany(
@@ -81,7 +81,7 @@ const productService = {
   deleteProduct,
   rejectProduct,
   approveProduct,
-  deleteProducts,
+  // deleteProducts,
   deleteProductsOfUser
 };
 
