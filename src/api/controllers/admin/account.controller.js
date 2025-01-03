@@ -13,6 +13,8 @@ module.exports.getAccounts = async (req, res, next) => {
     ...findFields(req.query, 'firstName', 'lastName', 'email', 'phone', 'role', 'status', 'deleted')
   };
 
+  findOptions.email = req.query.email ? { $regex: req.query.email, $options: 'i' } : '';
+
   const sortOptions = sortFields(req.query, 'lastName', 'createdAt', 'deletedAt', 'updatedAt');
 
   try {
