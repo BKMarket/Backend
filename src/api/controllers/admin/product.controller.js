@@ -33,7 +33,12 @@ module.exports.count = async (req, res) => {
 
 // [GET] /api/products/waiting
 module.exports.notApproved = async (req, res) => {
-  const product = await getProducts({ approved: false }, { lastModifiedAt: 1 }, req.query);
+  const findOptions = {
+    ...(req.query.name && { title: { $regex: req.query.name, $options: 'i' } }),
+    approved: false
+  };
+
+  const product = await getProducts(findOptions, { lastModifiedAt: 1 }, req.query);
   res.json({ success: true, data: product });
 };
 
@@ -42,6 +47,7 @@ module.exports.list = async (req, res) => {
   const findOptions = {
     ...(req.query.name && { title: { $regex: req.query.name, $options: 'i' } })
   };
+
   const product = await getProducts(findOptions, { lastModifiedAt: 1 }, req.query);
   res.json({ success: true, data: product });
 };

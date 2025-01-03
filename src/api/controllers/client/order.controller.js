@@ -48,10 +48,7 @@ module.exports.verifyIPN = async (req, res) => {
 
 module.exports.getPaymentHistory = async (req, res) => {
   try {
-    const history = await Order.find({ account: req.account.id })
-      .populate('account products.product')
-      .sort({ createdAt: -1 })
-      .paginate({ page: req.query.page, limit: req.query.limit });
+    const history = await orderService.getOwnOrders(req.account.id, req.query);
     res.json({ success: true, data: history });
   } catch (error) {
     res.status(500).json({ message: error.message });

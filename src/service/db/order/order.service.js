@@ -2,6 +2,14 @@ const Order = require('#models/order.model.js');
 const Product = require('#models/product.model.js');
 const mongoose = require('#config/db/customMongoose.js');
 
+const getOwnOrders = async (accountId, { page = 1, limit = 10 } = {}) => {
+  const orders = await Order.find({ account: accountId })
+    .sort({ createdAt: -1 })
+    .paginate({ page, limit })
+    .populate('account products.product');
+  return orders;
+};
+
 const countOrders = async (findOptions) => {
   const count = await Order.countDocuments(findOptions);
   return count;
@@ -171,6 +179,7 @@ const updateProductProof = async (orderId, productId, proof) => {
 };
 
 const orderService = {
+  getOwnOrders,
   countOrders,
   createOrder,
   getOrder,
