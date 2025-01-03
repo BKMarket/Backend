@@ -10,10 +10,18 @@ const {
 //[GET] /admin/api/accounts
 module.exports.getAccounts = async (req, res, next) => {
   const findOptions = {
-    ...findFields(req.query, 'firstName', 'lastName', 'email', 'phone', 'role', 'status', 'deleted')
+    ...findFields(
+      req.query,
+      'firstName',
+      'lastName',
+      'email',
+      'phone',
+      'role',
+      'status',
+      'deleted'
+    ),
+    ...(req.query.email && { email: { $regex: req.query.email, $options: 'i' } })
   };
-
-  findOptions.email = req.query.email ? { $regex: req.query.email, $options: 'i' } : '';
 
   const sortOptions = sortFields(req.query, 'lastName', 'createdAt', 'deletedAt', 'updatedAt');
 
