@@ -7,7 +7,7 @@ const seedAccount = () => {
   return {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
-    email: faker.internet.email({ provider: 'hcmut.edu.vn' }),
+    email: faker.internet.email({ provider: 'hcmut.edu.vn', allowSpecialCharacters: false }),
     password: '12345678',
     phone: faker.phone.number(),
     avatar: faker.image.avatar(),
