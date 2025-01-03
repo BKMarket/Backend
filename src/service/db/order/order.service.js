@@ -113,6 +113,11 @@ const getOrder = async (orderId) => {
   return order;
 };
 
+const getOrderByOptions = async (findOptions) => {
+  const order = await Order.find(findOptions);
+  return order;
+};
+
 const createOrder = async (orderData) => {
   const order = await Order.create(orderData);
   return order;
@@ -169,6 +174,7 @@ const orderService = {
   countOrders,
   createOrder,
   getOrder,
+  getOrderByOptions,
   updateOrder,
   cancelOrder,
   denyProduct,

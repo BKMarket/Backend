@@ -63,7 +63,7 @@ module.exports.verifyIPN = async (ipn) => {
     }
 
     //find order / transaction Log
-    const order = await orderService.getOrder({
+    const order = await orderService.getOrderByOptions({
       transactionID: verify.vnp_TxnRef
     });
 
