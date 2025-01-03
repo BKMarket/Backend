@@ -57,6 +57,7 @@ module.exports.my = async (req, res, next) => {
   const sortOptions = sortFields({ ...req.query.sort }, 'createdAt', 'price', 'sold');
   const findOptions = {
     ...findOptionsQuery2MongooseTransform(req.query),
+    ...(req.query.name && { title: { $regex: req.query.name, $options: 'i' } }),
     createdBy: req.account.id
   };
 
@@ -73,6 +74,7 @@ module.exports.myBanned = async (req, res, next) => {
   const sortOptions = sortFields({ ...req.query.sort }, 'createdAt', 'price', 'sold');
   const findOptions = {
     ...findOptionsQuery2MongooseTransform(req.query),
+    ...(req.query.name && { title: { $regex: req.query.name, $options: 'i' } }),
     deleted: true,
     createdBy: req.account.id,
     deletedBy: { $ne: req.account.id }
