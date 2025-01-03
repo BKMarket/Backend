@@ -80,7 +80,7 @@ module.exports.verifyIPN = async (ipn) => {
     }
 
     // update the order status
-    await orderService.updateOrder(order.id, { completed: true });
+    await orderService.updateOrder(order._id, { completed: true });
 
     return IpnSuccess;
   } catch (err) {

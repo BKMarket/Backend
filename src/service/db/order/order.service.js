@@ -114,7 +114,7 @@ const getOrder = async (orderId) => {
 };
 
 const getOrderByOptions = async (findOptions) => {
-  const order = await Order.find(findOptions);
+  const order = await Order.findOne(findOptions);
   return order;
 };
 
