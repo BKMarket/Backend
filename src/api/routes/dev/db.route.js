@@ -5,7 +5,7 @@ const dbSeedProduct = require('#service/seeder/product.service.js');
 
 const router = express.Router();
 
-router.delete('/clearaccount', async (req, res) => {
+router.delete('/clearaccount', async (req, res, next) => {
   mongoose.model('Account').collection.drop();
   res.status(200).json({ status: 'success', message: 'Cleared all accounts' });
 });
@@ -22,7 +22,7 @@ router.post('/seedaccount', async (req, res, next) => {
   }
 });
 
-router.delete('/clearproduct', async (req, res) => {
+router.delete('/clearproduct', async (req, res, next) => {
   mongoose.model('Product').collection.drop();
   res.status(200).json({ status: 'success', message: 'Cleared all products' });
 });

@@ -26,13 +26,13 @@ module.exports.deny = async (req, res, next) => {
 };
 
 // [GET] /api/products/count
-module.exports.count = async (req, res) => {
+module.exports.count = async (req, res, next) => {
   const count = await countProducts();
   res.json({ success: true, data: count });
 };
 
 // [GET] /api/products/waiting
-module.exports.notApproved = async (req, res) => {
+module.exports.notApproved = async (req, res, next) => {
   const findOptions = {
     ...(req.query.name && { title: { $regex: req.query.name, $options: 'i' } }),
     approved: false
@@ -43,7 +43,7 @@ module.exports.notApproved = async (req, res) => {
 };
 
 // [GET] /api/products/
-module.exports.list = async (req, res) => {
+module.exports.list = async (req, res, next) => {
   const findOptions = {
     ...(req.query.name && { title: { $regex: req.query.name, $options: 'i' } })
   };

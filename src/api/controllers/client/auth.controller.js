@@ -1,6 +1,6 @@
 const authService = require('#service/db/account/auth.service.js');
 
-module.exports.signUp = async (req, res) => {
+module.exports.signUp = async (req, res, next) => {
   try {
     const { token, account } = await authService.signUp(req.body);
     res.status(201).json({ token, account });
@@ -9,7 +9,7 @@ module.exports.signUp = async (req, res) => {
   }
 };
 
-module.exports.logIn = async (req, res) => {
+module.exports.logIn = async (req, res, next) => {
   try {
     const { token, account } = await authService.logIn(req.body);
     res.status(200).json({ token, account });

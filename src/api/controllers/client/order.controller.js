@@ -39,14 +39,14 @@ module.exports.purchase = async (req, res, next) => {
   }
 };
 
-module.exports.verifyIPN = async (req, res) => {
+module.exports.verifyIPN = async (req, res, next) => {
   const ipnReturn = req.query;
   const resJSON = await verifyIPN(ipnReturn);
   if (resJSON.RspCode == 0) return res.status(200).json(resJSON);
   res.json(resJSON);
 };
 
-module.exports.getPaymentHistory = async (req, res) => {
+module.exports.getPaymentHistory = async (req, res, next) => {
   try {
     const history = await orderService.getOwnOrders(req.account.id, req.query);
     res.json({ success: true, data: history });
@@ -55,7 +55,7 @@ module.exports.getPaymentHistory = async (req, res) => {
   }
 };
 
-module.exports.cancel = async (req, res) => {
+module.exports.cancel = async (req, res, next) => {
   try {
     await orderService.cancelOrder(req.params.orderId);
     res.json({ success: true, message: 'Order canceled' });
@@ -64,7 +64,7 @@ module.exports.cancel = async (req, res) => {
   }
 };
 
-module.exports.received = async (req, res) => {
+module.exports.received = async (req, res, next) => {
   try {
     await orderService.receiveProduct(req.params.orderId, req.params.productId);
     res.json({ success: true, message: 'Product received' });
@@ -73,7 +73,7 @@ module.exports.received = async (req, res) => {
   }
 };
 
-module.exports.deny = async (req, res) => {
+module.exports.deny = async (req, res, next) => {
   try {
     await orderService.denyProduct(req.params.orderId, req.params.productId);
     res.json({ success: true, message: 'Product denied' });
@@ -82,7 +82,7 @@ module.exports.deny = async (req, res) => {
   }
 };
 
-module.exports.accept = async (req, res) => {
+module.exports.accept = async (req, res, next) => {
   try {
     await orderService.acceptProduct(req.params.orderId, req.params.productId);
     res.json({ success: true, message: 'Product accepted' });
@@ -91,7 +91,7 @@ module.exports.accept = async (req, res) => {
   }
 };
 
-module.exports.proof = async (req, res) => {
+module.exports.proof = async (req, res, next) => {
   try {
     await orderService.updateProductProof(req.params.orderId, req.params.productId, req.body.proof);
     res.json({ success: true, message: 'Proof uploaded' });
@@ -100,7 +100,7 @@ module.exports.proof = async (req, res) => {
   }
 };
 
-module.exports.report = async (req, res) => {
+module.exports.report = async (req, res, next) => {
   try {
     await reportService.createReport(req.account.id, req.params.productId, req.body);
     res.json({ success: true, message: 'Reported' });
@@ -109,7 +109,7 @@ module.exports.report = async (req, res) => {
   }
 };
 
-module.exports.getMy = async (req, res) => {
+module.exports.getMy = async (req, res, next) => {
   try {
     const orders = await orderService.getSellerOrders(req.account.id, req.query);
     res.json({ success: true, data: orders });
@@ -118,7 +118,7 @@ module.exports.getMy = async (req, res) => {
   }
 };
 
-module.exports.getPending = async (req, res) => {
+module.exports.getPending = async (req, res, next) => {
   try {
     const orders = await orderService.getSellerPendingOrders(req.account.id, req.query);
     res.json({ success: true, data: orders });
@@ -127,7 +127,7 @@ module.exports.getPending = async (req, res) => {
   }
 };
 
-module.exports.getAccepted = async (req, res) => {
+module.exports.getAccepted = async (req, res, next) => {
   try {
     const orders = await orderService.getSellerAcceptedOrders(req.account.id, req.query);
     res.json({ success: true, data: orders });
@@ -136,7 +136,7 @@ module.exports.getAccepted = async (req, res) => {
   }
 };
 
-module.exports.getReceived = async (req, res) => {
+module.exports.getReceived = async (req, res, next) => {
   try {
     const orders = await orderService.getSellerReceivedOrders(req.account.id, req.query);
     res.json({ success: true, data: orders });
@@ -145,7 +145,7 @@ module.exports.getReceived = async (req, res) => {
   }
 };
 
-module.exports.getCanceled = async (req, res) => {
+module.exports.getCanceled = async (req, res, next) => {
   try {
     const orders = await orderService.getSellerCanceledOrders(req.account.id, req.query);
     res.json({ success: true, data: orders });

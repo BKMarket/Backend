@@ -1,6 +1,6 @@
 const reportService = require('#service/db/order/report.service.js');
 
-module.exports.getReports = (verdict) => async (req, res) => {
+module.exports.getReports = (verdict) => async (req, res, next) => {
   const reports = await reportService.getReports(
     { ...(verdict && { verdict }) },
     { createdAt: 1 },

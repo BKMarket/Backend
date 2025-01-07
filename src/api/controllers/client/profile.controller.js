@@ -1,7 +1,7 @@
 const profileService = require('#service/db/account/profile.service.js');
 const { pickFields } = require('#utils/query.utils.js');
 
-module.exports.updateProfile = async (req, res) => {
+module.exports.updateProfile = async (req, res, next) => {
   const { id } = req.account;
   const profile = pickFields(req.body, 'lastName', 'firstName', 'phone', 'avatar');
   try {
@@ -12,7 +12,7 @@ module.exports.updateProfile = async (req, res) => {
   }
 };
 
-module.exports.deleteProfile = async (req, res) => {
+module.exports.deleteProfile = async (req, res, next) => {
   const { id } = req.account;
   try {
     await profileService.deleteProfile(id);
@@ -22,7 +22,7 @@ module.exports.deleteProfile = async (req, res) => {
   }
 };
 
-module.exports.getProfile = async (req, res) => {
+module.exports.getProfile = async (req, res, next) => {
   const { id } = req.params;
   try {
     const account = await profileService.getProfile(id);
@@ -32,7 +32,7 @@ module.exports.getProfile = async (req, res) => {
   }
 };
 
-module.exports.getOwnProfile = async (req, res) => {
+module.exports.getOwnProfile = async (req, res, next) => {
   const { id } = req.account;
   try {
     const account = await profileService.getProfile(id);

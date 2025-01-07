@@ -40,7 +40,7 @@ module.exports.search = async (req, res, next) => {
 };
 
 // [GET] /api/products/:slug
-module.exports.detail = async (req, res) => {
+module.exports.detail = async (req, res, next) => {
   const findOptions = {
     deleted: false,
     approved: true,
